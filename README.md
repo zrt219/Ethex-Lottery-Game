@@ -249,7 +249,9 @@ Verified current status:
 
 The frontend is live on Vercel at [https://ui-pi-eight.vercel.app](https://ui-pi-eight.vercel.app).
 
-XRPL EVM deployment is currently blocked. The testnet address `0x31A826bB9D5F6087d94CDA31945C1234d061b788` has a `0` balance, and the faucet endpoint requires authentication, so no live contract address is available yet.
+The XRPL EVM contract is deployed at [0x6a481F555Ba68895Bc08854d677464f96D54C43d](https://explorer.testnet.xrplevm.org/address/0x6a481F555Ba68895Bc08854d677464f96D54C43d).
+
+The deployment wallet used for the broadcast is `0x31A826bB9D5F6087d94CDA31945C1234d061b788`.
 
 ### Environment variables
 
@@ -273,8 +275,10 @@ forge script script/Deploy.s.sol:Deploy --rpc-url $RPC_URL --private-key $PRIVAT
 ### XRPL EVM verify
 
 ```bash
-forge verify-contract $CONTRACT_ADDRESS src/EthexGame.sol:EthexGame --chain-id $CHAIN_ID
+forge verify-contract 0x6a481F555Ba68895Bc08854d677464f96D54C43d src/EthexGame.sol:EthexGame --chain-id 1449000
 ```
+
+Automated verification currently reports chain `1449000` as unsupported in the default no-key Sourcify path, so the manual explorer upload fallback in `docs/deployment.md` is the practical verification route for this network.
 
 ### Frontend build
 

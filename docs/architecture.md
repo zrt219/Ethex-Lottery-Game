@@ -170,7 +170,7 @@ The current deployment model is environment-driven:
 
 The frontend is live on Vercel at [https://ui-pi-eight.vercel.app](https://ui-pi-eight.vercel.app).
 
-XRPL EVM deployment is currently blocked because the testnet address `0x31A826bB9D5F6087d94CDA31945C1234d061b788` has a `0` balance and the faucet endpoint requires authentication. Until that changes, there is no live contract address to record.
+The XRPL EVM contract is deployed at [0x6a481F555Ba68895Bc08854d677464f96D54C43d](https://explorer.testnet.xrplevm.org/address/0x6a481F555Ba68895Bc08854d677464f96D54C43d).
 
 ## System diagram
 

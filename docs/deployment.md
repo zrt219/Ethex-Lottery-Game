@@ -17,9 +17,9 @@ XRPL EVM Testnet values used by this submission:
 
 - Frontend production URL: [https://ui-pi-eight.vercel.app](https://ui-pi-eight.vercel.app)
 - Deployment wallet: `0x31A826bB9D5F6087d94CDA31945C1234d061b788`
-- XRPL EVM contract address: not available yet
+- XRPL EVM contract address: [0x6a481F555Ba68895Bc08854d677464f96D54C43d](https://explorer.testnet.xrplevm.org/address/0x6a481F555Ba68895Bc08854d677464f96D54C43d)
 
-The contract deployment blocker is external rather than code-related. The deployment wallet above currently has a `0` balance on XRPL EVM Testnet, and the public faucet claim endpoint requires authenticated access. Until that wallet is funded, the Foundry broadcast step cannot complete and there is no live contract address to verify.
+The contract deployment has completed successfully. The repo now has a live XRPL EVM Testnet contract address to verify and a frontend deployment that can be wired to it.
 
 ## Environment configuration
 
@@ -81,12 +81,14 @@ npx vercel --cwd ui --prod
 Primary path:
 
 - Use `forge verify-contract` against the deployed `EthexGame` address once the wallet is funded and deployment succeeds.
+- The default no-key Sourcify route currently reports chain `1449000` as unsupported, so automated verification is not available on this network today.
 
 Fallback path if explorer API verification is unreliable:
 
 - export the standard JSON input from the Foundry build output
 - open the XRPL EVM Testnet explorer verification page
 - submit the exact compiler version, optimizer settings, contract path, contract name, and constructor arguments used during deployment
+- this is the route to use for this repo's current deployment
 
 ## Post-deploy checklist
 
