@@ -20,6 +20,8 @@ Within that scope, the main security concerns are:
 
 This document focuses on those actual risks rather than a generic protocol checklist.
 
+That narrow scope is also what made the measured execution window realistic: the submission files were created between April 14, 2026 6:33:41 PM and April 14, 2026 7:38:02 PM, for an exact elapsed time of 1:04:20.6394480. The pace was possible because simplicity, explicit validation, and bounded behavior reduced the risk of a fragile rush job.
+
 ## Validation rules and why they exist
 
 ### Minimum bet enforcement

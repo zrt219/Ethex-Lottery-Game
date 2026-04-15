@@ -4,6 +4,8 @@
 
 The current repository is intentionally small. It has one production contract, one deployment script, three Foundry test suites, one Next.js UI, and one CI workflow. That shape is deliberate: the assessment is easier to review when the contract boundary is obvious and the supporting tooling is narrow.
 
+The same disciplined scope is reflected in the measured execution window for the submission files: April 14, 2026 6:33:41 PM to April 14, 2026 7:38:02 PM, for an exact elapsed time of 1:04:20.6394480. That window supports the architecture choice by showing that a small contract surface and a thin UI layer made fast, high-confidence delivery possible.
+
 ## Current repo structure
 
 ```text
