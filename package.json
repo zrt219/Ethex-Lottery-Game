@@ -1,0 +1,15 @@
+{
+  "name": "ethex-lottery-assessment",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Technical assessment submission modernizing the Ethex lottery core flow",
+  "license": "MIT",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vvv",
+    "deploy:xrpl": "forge script script/Deploy.s.sol:Deploy --rpc-url $env:RPC_URL --private-key $env:PRIVATE_KEY --broadcast",
+    "verify:xrpl": "forge verify-contract --chain-id $env:CHAIN_ID --etherscan-api-key any-string $env:NEXT_PUBLIC_CONTRACT_ADDRESS src/EthexGame.sol:EthexGame $env:RPC_URL",
+    "ui:dev": "npm --prefix ui run dev",
+    "ui:build": "npm --prefix ui run build"
+  }
+}

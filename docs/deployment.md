@@ -1,0 +1,127 @@
+# Deployment Guide
+
+## Summary
+
+This repository is wired for one Foundry deployment to XRPL EVM Testnet and one Vercel deployment from the `ui/` subdirectory.
+
+## Network configuration
+
+XRPL EVM Testnet values used by this submission:
+
+- Network: `XRPL EVM Testnet`
+- Chain ID: `1449000`
+- RPC URL: `https://rpc.testnet.xrplevm.org/`
+- Explorer: `https://explorer.testnet.xrplevm.org/`
+
+## Current live status
+
+- Frontend production URL: [https://ui-pi-eight.vercel.app](https://ui-pi-eight.vercel.app)
+- Deployment wallet: `0x31A826bB9D5F6087d94CDA31945C1234d061b788`
+- XRPL EVM contract address: not available yet
+
+The contract deployment blocker is external rather than code-related. The deployment wallet above currently has a `0` balance on XRPL EVM Testnet, and the public faucet claim endpoint requires authenticated access. Until that wallet is funded, the Foundry broadcast step cannot complete and there is no live contract address to verify.
+
+## Environment configuration
+
+Expected root `.env` values:
+
+```bash
+RPC_URL=https://rpc.testnet.xrplevm.org/
+PRIVATE_KEY=<testnet_private_key>
+CHAIN_ID=1449000
+INITIAL_LIQUIDITY_ETH=1
+NEXT_PUBLIC_CHAIN_ID=1449000
+NEXT_PUBLIC_RPC_URL=https://rpc.testnet.xrplevm.org/
+NEXT_PUBLIC_CONTRACT_ADDRESS=<deployed_contract_address>
+NEXT_PUBLIC_EXPLORER_URL=https://explorer.testnet.xrplevm.org/
+```
+
+Do not commit private keys. The assessment key should be treated as disposable testnet-only material.
+
+## One-line commands
+
+### Build
+
+```bash
+forge build
+```
+
+### Test
+
+```bash
+forge test -vvv
+```
+
+### Deploy
+
+```bash
+forge script script/Deploy.s.sol:Deploy --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+```
+
+### Verify
+
+```bash
+forge verify-contract $CONTRACT_ADDRESS src/EthexGame.sol:EthexGame --chain-id $CHAIN_ID
+```
+
+### Run frontend locally
+
+```bash
+npm --prefix ui run dev
+```
+
+### Deploy frontend to Vercel
+
+```bash
+npx vercel --cwd ui --prod
+```
+
+## Verification notes
+
+Primary path:
+
+- Use `forge verify-contract` against the deployed `EthexGame` address once the wallet is funded and deployment succeeds.
+
+Fallback path if explorer API verification is unreliable:
+
+- export the standard JSON input from the Foundry build output
+- open the XRPL EVM Testnet explorer verification page
+- submit the exact compiler version, optimizer settings, contract path, contract name, and constructor arguments used during deployment
+
+## Post-deploy checklist
+
+- record deployed `EthexGame` address in `README.md`
+- add the XRPL explorer address link to `README.md`
+- set `NEXT_PUBLIC_CONTRACT_ADDRESS`
+- confirm the frontend is pointed at XRPL EVM Testnet
+- redeploy `ui/` to Vercel if configuration changes
+
+## Vercel project setup
+
+Recommended Vercel settings:
+
+- Framework preset: `Next.js`
+- Root directory: `ui`
+- Install command: `npm install`
+- Build command: `npm run build`
+
+Required frontend environment variables:
+
+- `NEXT_PUBLIC_CHAIN_ID`
+- `NEXT_PUBLIC_RPC_URL`
+- `NEXT_PUBLIC_CONTRACT_ADDRESS`
+- `NEXT_PUBLIC_EXPLORER_URL`
+
+## GitHub push commands
+
+If GitHub authentication is available:
+
+```bash
+git add . && git commit -m "Build assessment submission" && git push origin main
+```
+
+If the remote is not configured locally:
+
+```bash
+git remote add origin https://github.com/zrt219/Ethex-Lottery-Game.git && git branch -M main && git push -u origin main
+```

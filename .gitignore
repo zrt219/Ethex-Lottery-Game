@@ -1,0 +1,12 @@
+.env
+.env.local
+.DS_Store
+cache/
+out/
+broadcast/
+ui/.next/
+ui/node_modules/
+ui/.vercel/
+node_modules/
+coverage/
+dist/
