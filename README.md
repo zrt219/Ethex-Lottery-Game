@@ -6,6 +6,16 @@ The live dApp exposes the full reviewer-facing lifecycle directly: place a bet, 
 
 Execution window: Using the submission files as the reference set, the earliest creation timestamp in this submission is April 14, 2026 6:33:41 PM. Measured against April 14, 2026 8:39:46 PM, the exact elapsed time for this build cycle is 2:06:05.6494447. This timing covers the submission files from first file creation to current measured time, and it is included here to show disciplined execution speed alongside the actual deliverables: a modernized Solidity system, passing tests, a live XRPL EVM Testnet deployment, a live Vercel dApp, and employer-facing documentation.
 
+## Live Interface Preview
+
+<img width="1400" alt="Dashboard Overview" src="https://github.com/user-attachments/assets/3a286249-97cb-4e5d-bb86-8845af720af8" />
+
+*Live reviewer dashboard showing XRPL EVM deployment context, queue posture, liquidity, accrued house fees, and claimable balance.*
+
+<img width="1400" alt="Settlement and Claim Flow" src="https://github.com/user-attachments/assets/488becff-7e5f-4065-bd51-9b5cd629626e" />
+
+*End-to-end reviewer flow: construct a six-slot bet, submit on-chain, settle the bounded queue, and unlock claimable balance.*
+
 ## Assessment context
 
 The source task came from a legacy multi-contract Solidity repository built around `EthexLoto`, `EthexJackpot`, `EthexSuperprize`, and `EthexHouse`. The objective of this submission is not to preserve that system mechanically. The objective is to show that the original codebase was understood, that the core deterministic betting flow was identified correctly, and that it could be rebuilt in a cleaner form that is easier to review, test, and deploy.
