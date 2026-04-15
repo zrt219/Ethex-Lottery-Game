@@ -4,7 +4,9 @@
 
 The current repository is intentionally small. It has one production contract, one deployment script, three Foundry test suites, one Next.js UI, and one CI workflow. That shape is deliberate: the assessment is easier to review when the contract boundary is obvious and the supporting tooling is narrow.
 
-The same disciplined scope is reflected in the measured execution window for the submission files: April 14, 2026 6:33:41 PM to April 14, 2026 8:02:00 PM, for an exact elapsed time of 1:28:18.7924261. That window supports the architecture choice by showing that a small contract surface and a thin UI layer made fast, high-confidence delivery possible.
+The same disciplined scope is reflected in the measured execution window for the submission files: April 14, 2026 6:33:41 PM to April 14, 2026 8:39:46 PM, for an exact elapsed time of 2:06:05.6494447. That window supports the architecture choice by showing that a small contract surface and a thin UI layer made fast, high-confidence delivery possible.
+
+The current frontend now exposes settlement directly, so the lifecycle is visible in order: place bet, process the bounded queue, then claim. That keeps the architecture small while making the contract posture legible to a reviewer.
 
 ## Current repo structure
 
@@ -70,6 +72,7 @@ The UI in `ui/` is a thin interaction layer over the contract. It does not re-im
 - Build local previews
 - Read contract state
 - Submit `placeBet`
+- Submit `settleBets`
 - Submit `claim`
 - Handle wallet connection and network switching
 
@@ -157,7 +160,7 @@ The main user-facing panels map directly to current code:
 
 - Overview
 - Wallet and deployment context
-- Live contract posture
+- Live contract posture and settlement controls
 - Bet builder
 - Engineering notes
 - Recent activity log

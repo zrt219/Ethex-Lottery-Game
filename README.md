@@ -2,7 +2,9 @@
 
 Technical assessment submission that modernizes the core `EthexLoto` betting flow from the legacy GitLab repository into a single-contract Foundry project with a real Next.js dApp targeting XRPL EVM Testnet.
 
-Execution window: Using the submission files as the reference set, the earliest creation timestamp in this submission is April 14, 2026 6:33:41 PM. Measured against April 14, 2026 8:02:00 PM, the exact elapsed time for this build cycle is 1:28:18.7924261. This timing covers the submission files from first file creation to current measured time, and it is included here to show disciplined execution speed alongside the actual deliverables: a modernized Solidity system, passing tests, a live XRPL EVM Testnet deployment, a live Vercel dApp, and employer-facing documentation.
+The live dApp exposes the full reviewer-facing lifecycle directly: place a bet, settle the bounded queue, then claim the resulting balance.
+
+Execution window: Using the submission files as the reference set, the earliest creation timestamp in this submission is April 14, 2026 6:33:41 PM. Measured against April 14, 2026 8:39:46 PM, the exact elapsed time for this build cycle is 2:06:05.6494447. This timing covers the submission files from first file creation to current measured time, and it is included here to show disciplined execution speed alongside the actual deliverables: a modernized Solidity system, passing tests, a live XRPL EVM Testnet deployment, a live Vercel dApp, and employer-facing documentation.
 
 ## Assessment context
 
@@ -81,7 +83,8 @@ The current UI supports:
 - XRPL EVM Testnet switching
 - Local and on-chain fee preview
 - Live reads for liquidity, pending cursor, house fees, and claimable balance
-- On-chain `placeBet` and `claim` transactions when `NEXT_PUBLIC_CONTRACT_ADDRESS` is configured
+- On-chain `placeBet`, `settleBets`, and `claim` transactions when `NEXT_PUBLIC_CONTRACT_ADDRESS` is configured
+- Visible settlement controls so claimability is clearly tied to the bounded queue lifecycle
 
 ### Deployment architecture
 
@@ -175,6 +178,7 @@ Tradeoffs are documented rather than hidden. The system still relies on `blockha
 - Liquidity reservation at bet placement
 - Queue-based settlement and expired-bet refunds
 - Pull-based claims
+- Visible settlement step in the dApp so the claim lifecycle is obvious to reviewers
 - Foundry unit, fuzz, and invariant tests
 - Next.js UI with live reads and contract writes when configured
 

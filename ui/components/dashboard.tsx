@@ -70,6 +70,7 @@ const publicClient = createPublicClient({
 export function Dashboard() {
   const [cells, setCells] = useState<string[]>(defaultCells);
   const [betAmount, setBetAmount] = useState<string>(minBetAmount);
+  const [settlementCount, setSettlementCount] = useState<string>("10");
   const [walletAddress, setWalletAddress] = useState<Address | undefined>();
   const [walletChainId, setWalletChainId] = useState<number | undefined>();
   const [isConnecting, setIsConnecting] = useState(false);
@@ -97,6 +98,13 @@ export function Dashboard() {
   const preview = useMemo<BuildPreviewResult>(() => buildPreview(cells, parsedAmount), [cells, parsedAmount]);
   const isConnected = Boolean(walletAddress);
   const wrongNetwork = isConnected && walletChainId !== xrplChain.id;
+  const settlementMaxCount = useMemo(() => {
+    const parsed = Number.parseInt(settlementCount, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+  }, [settlementCount]);
+  const claimableBalance = chainState.claimable ?? 0n;
+  const canSettle = isConnected && !wrongNetwork && Boolean(contractAddress) && settlementMaxCount !== undefined && !isWorking;
+  const canClaim = isConnected && !wrongNetwork && Boolean(contractAddress) && claimableBalance > 0n && !isWorking;
 
   useEffect(() => {
     hydrateWalletState().catch(() => {
@@ -269,6 +277,14 @@ export function Dashboard() {
   async function submitClaim() {
     const activeContractAddress = contractAddress;
     if (!activeContractAddress || !walletAddress || wrongNetwork) return;
+    if (claimableBalance === 0n) {
+      pushActivity(
+        "Nothing to claim",
+        "Claim stays disabled until settlement creates a non-zero claimable balance.",
+        "warning"
+      );
+      return;
+    }
 
     await executeWrite(async () => {
       const walletClient = createWalletClient({
@@ -291,9 +307,65 @@ export function Dashboard() {
     });
   }
 
-  async function readLiveState() {
+  async function submitSettleBets() {
     const activeContractAddress = contractAddress;
-    if (!activeContractAddress) return;
+    if (!activeContractAddress || !walletAddress || wrongNetwork || settlementMaxCount === undefined) return;
+
+    const cursorBefore = chainState.pendingCursor;
+
+    await executeWrite(async () => {
+      const walletClient = createWalletClient({
+        chain: xrplChain,
+        transport: custom(getInjectedProvider())
+      });
+
+      const hash = await walletClient.writeContract({
+        account: walletAddress,
+        address: activeContractAddress,
+        abi: ethexGameAbi,
+        functionName: "settleBets",
+        args: [BigInt(settlementMaxCount)]
+      });
+
+      setTxHash(hash);
+      pushActivity("Settlement submitted", `Processing up to ${settlementMaxCount} queued bets.`, "neutral");
+      await publicClient.waitForTransactionReceipt({ hash });
+      const refreshed = await readLiveState();
+
+      if (cursorBefore && refreshed?.pendingCursor) {
+        const [beforeNext, beforeStop] = cursorBefore;
+        const [afterNext, afterStop] = refreshed.pendingCursor;
+        const queueEmptyBefore = beforeNext >= beforeStop;
+        const queueUnchanged = beforeNext === afterNext && beforeStop === afterStop;
+
+        if (queueUnchanged && queueEmptyBefore) {
+          pushActivity(
+            "Queue already empty",
+            "The permissionless settlement call completed and found no pending bets to process.",
+            "neutral"
+          );
+        } else if (queueUnchanged) {
+          pushActivity(
+            "Settlement paused",
+            "The oldest pending bet is still waiting for blockhash eligibility, so the bounded queue remains unchanged.",
+            "warning"
+          );
+        } else {
+          pushActivity(
+            "Queue advanced",
+            "Settlement processed the oldest eligible bets and refreshed the live contract reads.",
+            "success"
+          );
+        }
+      } else {
+        pushActivity("Queue refreshed", "Settlement completed and the live contract reads were refreshed.", "success");
+      }
+    });
+  }
+
+  async function readLiveState(): Promise<ChainState | undefined> {
+    const activeContractAddress = contractAddress;
+    if (!activeContractAddress) return undefined;
 
     const [availableLiquidity, pendingCursor, houseFeesAccrued, claimable] = await Promise.all([
       publicClient.readContract({
@@ -327,6 +399,13 @@ export function Dashboard() {
       houseFeesAccrued,
       claimable
     });
+
+    return {
+      availableLiquidity,
+      pendingCursor,
+      houseFeesAccrued,
+      claimable
+    };
   }
 
   async function executeWrite(action: () => Promise<void>) {
@@ -471,7 +550,7 @@ export function Dashboard() {
           <Panel
             eyebrow="Live state"
             title="Current contract posture"
-            description="These reads come from the configured deployment when available, so the page reflects the live contract while staying focused on reviewability."
+            description="These reads come from the configured deployment when available, so the page reflects the live contract while staying focused on reviewability. Settlement is permissionless, bounded, and the required step before claimable balances appear."
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <StateTile label="Available liquidity" value={formatReadValue(chainState.availableLiquidity)} />
@@ -483,13 +562,48 @@ export function Dashboard() {
                     ? `${chainState.pendingCursor[0].toString()} -> ${chainState.pendingCursor[1].toString()}`
                     : "Unavailable"
                 }
-              />
+                />
               <StateTile label="Connected wallet claimable" value={formatReadValue(chainState.claimable)} />
+              <StateTile
+                label="Settlement queue"
+                value={
+                  chainState.pendingCursor
+                    ? `${(chainState.pendingCursor[1] - chainState.pendingCursor[0]).toString()} pending`
+                    : "Unavailable"
+                }
+              />
+            </div>
+            <div className="mt-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
+              <p className="font-[var(--font-plex-mono)] text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                Queue settlement
+              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-300">
+                Winnings and refunds stay pending until someone processes the bounded on-chain queue. After
+                settlement, claimable balances become visible here and the claim button unlocks when the balance is
+                non-zero.
+              </p>
+              <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                <label className="space-y-2">
+                  <span className="text-xs uppercase tracking-[0.24em] text-slate-400">Max bets to settle</span>
+                  <input
+                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-glow/70 focus:bg-white/[0.06]"
+                    type="number"
+                    min="1"
+                    step="1"
+                    inputMode="numeric"
+                    value={settlementCount}
+                    onChange={(event) => setSettlementCount(event.target.value)}
+                  />
+                </label>
+                <ActionButton onClick={submitSettleBets} disabled={!canSettle}>
+                  {isWorking ? "Processing..." : "Settle pending bets"}
+                </ActionButton>
+              </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-3">
               <ActionButton
                 onClick={submitClaim}
-                disabled={!isConnected || wrongNetwork || !contractAddress || isWorking}
+                disabled={!canClaim}
                 variant="secondary"
               >
                 {isWorking ? "Processing..." : "Claim available balance"}
@@ -610,6 +724,7 @@ export function Dashboard() {
                 title="Modernized for reviewability"
                 items={[
                   "Explicit inactive slots and readable labels replace opaque packed bet bytes.",
+                  "Visible queue settlement makes the claim lifecycle obvious without changing contract guarantees.",
                   "Dynamic house edge tiers are surfaced directly in the interaction flow.",
                   "Explorer shortcuts and direct chain reads keep the deployed contract inspectable."
                 ]}
@@ -784,9 +899,25 @@ function getInjectedProvider() {
 }
 
 function getErrorMessage(error: unknown) {
-  if (error instanceof Error) {
-    return error.message;
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("user rejected") || normalized.includes("rejected the request")) {
+    return "Transaction was rejected in the wallet.";
   }
 
-  return "Unexpected wallet or network error.";
+  if (
+    normalized.includes("gas") ||
+    normalized.includes("estimate") ||
+    normalized.includes("intrinsic gas") ||
+    normalized.includes("insufficient funds")
+  ) {
+    return "Gas estimation failed or the wallet could not cover the transaction cost.";
+  }
+
+  if (normalized.includes("execution reverted") || normalized.includes("revert")) {
+    return "The contract reverted while processing the transaction.";
+  }
+
+  return message || "Unexpected wallet or network error.";
 }

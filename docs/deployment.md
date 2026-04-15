@@ -4,7 +4,9 @@
 
 This repository is wired for one Foundry deployment to XRPL EVM Testnet and one Vercel deployment from the `ui/` subdirectory.
 
-The deployment work sits inside the same measured submission window used throughout the assessment framing: April 14, 2026 6:33:41 PM to April 14, 2026 8:02:00 PM, for an exact elapsed time of 1:28:18.7924261. Within that window, the repo reached a live XRPL EVM Testnet contract and a live Vercel frontend, which is the practical endpoint this submission was meant to demonstrate.
+The deployment work sits inside the same measured submission window used throughout the assessment framing: April 14, 2026 6:33:41 PM to April 14, 2026 8:39:46 PM, for an exact elapsed time of 2:06:05.6494447. Within that window, the repo reached a live XRPL EVM Testnet contract and a live Vercel frontend, which is the practical endpoint this submission was meant to demonstrate.
+
+The live frontend now exposes settlement directly, so the deployed UI reflects the actual lifecycle: bet, settle, then claim.
 
 ## Network configuration
 
@@ -21,7 +23,7 @@ XRPL EVM Testnet values used by this submission:
 - Deployment wallet: `0x31A826bB9D5F6087d94CDA31945C1234d061b788`
 - XRPL EVM contract address: [0x6a481F555Ba68895Bc08854d677464f96D54C43d](https://explorer.testnet.xrplevm.org/address/0x6a481F555Ba68895Bc08854d677464f96D54C43d)
 
-The contract deployment has completed successfully. The repo now has a live XRPL EVM Testnet contract address to verify and a frontend deployment that can be wired to it.
+The contract deployment has completed successfully. The repo now has a live XRPL EVM Testnet contract address to verify and a frontend deployment that exposes bet placement, settlement, and claim flows directly.
 
 ## Environment configuration
 

@@ -4,7 +4,9 @@
 
 The GitLab source repository was analyzed as business-context reference, not as an implementation baseline. The important conclusion was that `EthexLoto` contained the core deterministic game flow, while the surrounding contracts added prize, treasury, and migration complexity that was not necessary for a clean assessment submission.
 
-The submission timeline reflects that decision: the files in this repo were created between April 14, 2026 6:33:41 PM and April 14, 2026 8:02:00 PM, for an exact elapsed time of 1:28:18.7924261. That speed came from preserving the core business logic and omitting the legacy side systems that would have added scope without improving the assessment signal.
+The submission timeline reflects that decision: the files in this repo were created between April 14, 2026 6:33:41 PM and April 14, 2026 8:39:46 PM, for an exact elapsed time of 2:06:05.6494447. That speed came from preserving the core business logic and omitting the legacy side systems that would have added scope without improving the assessment signal.
+
+The final dApp now makes the settlement step visible, which matches the original queue-based `EthexLoto` behavior without reintroducing the legacy side contracts that were omitted from this submission.
 
 ## Legacy repository structure
 

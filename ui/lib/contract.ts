@@ -32,6 +32,7 @@ export const isContractConfigured = Boolean(contractAddress);
 
 export const ethexGameAbi = parseAbi([
   "function placeBet(uint8[6] cells) payable returns (uint256 betId)",
+  "function settleBets(uint256 maxCount) returns (uint256 processed)",
   "function claim()",
   "function claimable(address user) view returns (uint256)",
   "function availableLiquidity() view returns (uint256)",

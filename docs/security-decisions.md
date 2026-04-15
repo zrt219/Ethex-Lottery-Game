@@ -20,7 +20,9 @@ Within that scope, the main security concerns are:
 
 This document focuses on those actual risks rather than a generic protocol checklist.
 
-That narrow scope is also what made the measured execution window realistic: the submission files were created between April 14, 2026 6:33:41 PM and April 14, 2026 8:02:00 PM, for an exact elapsed time of 1:28:18.7924261. The pace was possible because simplicity, explicit validation, and bounded behavior reduced the risk of a fragile rush job.
+That narrow scope is also what made the measured execution window realistic: the submission files were created between April 14, 2026 6:33:41 PM and April 14, 2026 8:39:46 PM, for an exact elapsed time of 2:06:05.6494447. The pace was possible because simplicity, explicit validation, and bounded behavior reduced the risk of a fragile rush job.
+
+The frontend now exposes settlement directly instead of hiding it behind the contract boundary. That keeps the lifecycle understandable to reviewers and matches the way the contract actually works.
 
 ## Validation rules and why they exist
 
@@ -82,6 +84,8 @@ Claims follow a pull model:
 
 This keeps settlement free from recipient-side transfer failures and narrows the external-call surface.
 
+The dApp disables the claim button when the connected wallet's claimable balance is zero. That is a UX improvement only; it does not change the contract's guarantees or permissions.
+
 ## Accounting invariants
 
 The contract's solvency posture relies on explicit buckets:
@@ -137,6 +141,7 @@ These choices were driven by reviewability and safety, not just style preference
 
 - Randomness still depends on `blockhash`, which is acceptable for this assessment but not ideal for a production wagering product.
 - Settlement is permissionless but not automated; someone must call `settleBets`.
+- Settlement is intentionally exposed in the public dApp so users can advance the queue before claiming.
 - Owner fee withdrawals are trusted within the amount tracked by `houseFeesAccrued`.
 - Liquidity must be prefunded manually through `fundLiquidity()`.
 
