@@ -4,7 +4,7 @@
 
 This repository is wired for one Foundry deployment to XRPL EVM Testnet and one Vercel deployment from the `ui/` subdirectory.
 
-The deployment work sits inside the same measured submission window used throughout the assessment framing: April 14, 2026 6:33:41 PM to April 14, 2026 7:38:02 PM, for an exact elapsed time of 1:04:20.6394480. Within that window, the repo reached a live XRPL EVM Testnet contract and a live Vercel frontend, which is the practical endpoint this submission was meant to demonstrate.
+The deployment work sits inside the same measured submission window used throughout the assessment framing: April 14, 2026 6:33:41 PM to April 14, 2026 8:02:00 PM, for an exact elapsed time of 1:28:18.7924261. Within that window, the repo reached a live XRPL EVM Testnet contract and a live Vercel frontend, which is the practical endpoint this submission was meant to demonstrate.
 
 ## Network configuration
 

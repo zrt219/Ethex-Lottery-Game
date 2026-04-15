@@ -2,7 +2,7 @@
 
 Technical assessment submission that modernizes the core `EthexLoto` betting flow from the legacy GitLab repository into a single-contract Foundry project with a real Next.js dApp targeting XRPL EVM Testnet.
 
-Execution window: Using the submission files as the reference set, the earliest creation timestamp in this submission is April 14, 2026 6:33:41 PM. Measured against April 14, 2026 7:38:02 PM, the exact elapsed time for this build cycle is 1:04:20.6394480. This timing covers the submission files from first file creation to current measured time, and it is included here to show disciplined execution speed alongside the actual deliverables: a modernized Solidity system, passing tests, a live XRPL EVM Testnet deployment, a live Vercel dApp, and employer-facing documentation.
+Execution window: Using the submission files as the reference set, the earliest creation timestamp in this submission is April 14, 2026 6:33:41 PM. Measured against April 14, 2026 8:02:00 PM, the exact elapsed time for this build cycle is 1:28:18.7924261. This timing covers the submission files from first file creation to current measured time, and it is included here to show disciplined execution speed alongside the actual deliverables: a modernized Solidity system, passing tests, a live XRPL EVM Testnet deployment, a live Vercel dApp, and employer-facing documentation.
 
 ## Assessment context
 

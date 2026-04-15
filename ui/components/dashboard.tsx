@@ -81,7 +81,7 @@ export function Dashboard() {
     {
       id: "ready",
       title: "UI ready",
-      detail: "Connected to the XRPL EVM Testnet configuration and waiting for a deployed contract address.",
+      detail: "Connected to the XRPL EVM Testnet configuration and ready for live contract interaction.",
       tone: "neutral"
     }
   ]);
@@ -471,7 +471,7 @@ export function Dashboard() {
           <Panel
             eyebrow="Live state"
             title="Current contract posture"
-            description="These reads come from the configured deployment when available. The page still works as a local review surface before deployment is wired in."
+            description="These reads come from the configured deployment when available, so the page reflects the live contract while staying focused on reviewability."
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <StateTile label="Available liquidity" value={formatReadValue(chainState.availableLiquidity)} />
